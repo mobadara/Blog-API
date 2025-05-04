@@ -10,3 +10,12 @@ class Blog(Base):
     title = Column(String, index=True)
     body = Column(String, index=True)
     published = Column(Boolean, default=False)
+    
+    
+class User(Base):
+    __tablename__ = 'users'
+    
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String)
