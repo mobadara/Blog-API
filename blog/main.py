@@ -24,7 +24,7 @@ Base.metadata.create_all(bind=engine)
 
 @app.post('/blog', status_code=status.HTTP_201_CREATED, response_model=schemas.ShowBlog, tags=['Blogs'])                
 def create(request: schemas.Blog, db: Session = Depends(get_db)) -> models.Blog:    
-    new_blog = models.Blog(title=request.title, body=request.body)
+    new_blog = models.Blog(**request.model_dump())
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
@@ -51,9 +51,7 @@ def update(id: int, request: schemas.Blog, db: Session = Depends(get_db)) -> mod
     db.refresh(blog)
     return blog
     
-    
-        
-    
+     
 @app.get('/blog', response_model=List[schemas.ShowBlog], tags=['Blogs'])
 def all(db: Session = Depends(get_db)) -> List[models.Blog]:
     blogs = db.query(models.Blog).all()
@@ -72,7 +70,7 @@ def show(id: int, db: Session = Depends(get_db)) -> models.Blog:
 def create_user(request: schemas.User, db: Session = Depends(get_db)) -> models.User:
     hashed_password = pwd_context.hash(request.password)
     request.password = hashed_password
-    new_user = models.User(username=request.username, email=request.email, password=request.password)
+    new_user = models.User(**request.model_dump())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
