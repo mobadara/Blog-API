@@ -7,8 +7,8 @@ name = "pypi"
 uvicorn = "*"
 fastapi = "*"
 sqlalchemy = "*"
-passlib = "*"
 bcrypt = "*"
+passlib = "*"
 
 [dev-packages]
 
