@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from passlib.context import CryptContext
 
 
 from .. import schemas, models
 from .. database import get_db
+from .. hashing import hash_password
 
-pwd_context = CryptContext(schemes=['bcrypt'], default='bcrypt')
+
 router = APIRouter(
     tags=['Users'],
     prefix='/user'
@@ -16,7 +16,7 @@ router = APIRouter(
 
 @router.post('/', response_model=schemas.User, status_code=status.HTTP_201_CREATED, tags=['Users'])
 def create_user(request: schemas.User, db: Session = Depends(get_db)) -> models.User:
-    hashed_password = pwd_context.hash(request.password)
+    hashed_password = hash_password(request.password)
     request.password = hashed_password
     new_user = models.User(**request.model_dump())
     db.add(new_user)
